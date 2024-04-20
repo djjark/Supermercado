@@ -1,7 +1,6 @@
 // ItemList.js
 
 import React, { useState, useEffect } from 'react';
-import { getItems, deleteItem } from './db';
 
 const ItemList = () => {
     const [items, setItems] = useState([]);

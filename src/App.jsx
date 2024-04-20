@@ -1,7 +1,7 @@
 // App.js
 
 import React from 'react';
-import ItemList from './ItemList';
+//import ItemList from './ItemList';
 // import { addItem, updateItem } from './db.js';
 
 const App = () => {
@@ -27,7 +27,7 @@ const App = () => {
     <div>
       <h1>My App</h1>
       <button onClick={handleAddItem}>Add Item</button>
-      <ItemList />
+      {/* <ItemList /> */}
     </div>
   );
 };
