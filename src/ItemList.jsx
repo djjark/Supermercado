@@ -1,45 +1,60 @@
-// ItemList.js
-
 import React, { useState, useEffect } from 'react';
+import supabase from './supabaseClient'; // Import the Supabase client
 
-const ItemList = () => {
-    const [items, setItems] = useState([]);
+
+function ProductList() {
+    const [products, setProducts] = useState([]);
 
     useEffect(() => {
-        fetchItems();
+        console.log(supabase)
+        async function fetchProducts() {
+            const { data, error } = await supabase.from('supermercado').select('*');
+            if (error) {
+                console.error('Error fetching products:', error.message);
+                return;
+            }
+            console.log("data")
+            console.log(data)
+            setProducts(data);
+        }
+
+        fetchProducts();
     }, []);
 
-    const fetchItems = async () => {
-        try {
-            const itemsFromDB = await getItems();
-            setItems(itemsFromDB);
-        } catch (error) {
-            console.error('Error fetching items:', error);
-        }
-    };
-
-    const handleDeleteItem = async (id) => {
-        try {
-            await deleteItem(id);
-            fetchItems();
-        } catch (error) {
-            console.error('Error deleting item:', error);
-        }
-    };
 
     return (
         <div>
-            <h1>Items</h1>
-            <ul>
-                {items.map((item) => (
-                    <li key={item.id}>
-                        {item.name}
-                        <button onClick={() => handleDeleteItem(item.id)}>Delete</button>
-                    </li>
-                ))}
-            </ul>
+            <h2>Supermarket Data</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Pingo Doce</th>
+                        <th>Lidl</th>
+                        <th>Continente</th>
+                        <th>Auchan</th>
+                        <th>Recheio</th>
+                        <th>Makro</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {products.map(item => (
+                        <tr key={item.id}>
+                            <td>{item.id}</td>
+                            <td>{item.Nome}</td>
+                            <td>{item['Pingo Doce']}</td>
+                            <td>{item.lidl}</td>
+                            <td>{item.continente}</td>
+                            <td>{item.auchan}</td>
+                            <td>{item.recheio}</td>
+                            <td>{item.makro}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
         </div>
     );
-};
+}
 
-export default ItemList;
+export default ProductList;
