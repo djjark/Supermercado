@@ -1,14 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import supabase from './supabaseClient'; // Import the Supabase client
+import { Auth } from '@supabase/auth-ui-react'
+import { ThemeSupa } from '@supabase/auth-ui-shared'
 
 function ProductList() {
     const [products, setProducts] = useState([]);
     const [newProductName, setNewProductName] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
+    const [session, setSession] = useState(null)
 
     useEffect(() => {
         fetchProducts();
     }, []);
+
+    useEffect(() => {
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            setSession(session)
+        })
+
+        const {
+            data: { subscription },
+        } = supabase.auth.onAuthStateChange((_event, session) => {
+            setSession(session)
+        })
+
+        return () => subscription.unsubscribe()
+    }, [])
 
     const fetchProducts = async () => {
         try {
@@ -95,7 +112,9 @@ function ProductList() {
         fetchProducts();
     };
     return (
+
         <div className="container">
+            {!session ? <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} /> : null}
             <div className="search">
                 <input
                     type="text"
@@ -126,7 +145,6 @@ function ProductList() {
                             <td>{item.id}</td>
                             <td>{item.Nome}</td>
                             <td>
-                                <span>{item['Pingo Doce']}</span>
                                 <input
                                     type="text"
                                     value={item['Pingo Doce']}
@@ -134,7 +152,6 @@ function ProductList() {
                                 />
                             </td>
                             <td>
-                                <span>{item.lidl}</span>
                                 <input
                                     type="text"
                                     value={item.lidl}
@@ -142,7 +159,6 @@ function ProductList() {
                                 />
                             </td>
                             <td>
-                                <span>{item.continente}</span>
                                 <input
                                     type="text"
                                     value={item.continente}
@@ -150,7 +166,6 @@ function ProductList() {
                                 />
                             </td>
                             <td>
-                                <span>{item.auchan}</span>
                                 <input
                                     type="text"
                                     value={item.auchan}
@@ -158,7 +173,6 @@ function ProductList() {
                                 />
                             </td>
                             <td>
-                                <span>{item.recheio}</span>
                                 <input
                                     type="text"
                                     value={item.recheio}
@@ -166,7 +180,6 @@ function ProductList() {
                                 />
                             </td>
                             <td>
-                                <span>{item.makro}</span>
                                 <input
                                     type="text"
                                     value={item.makro}

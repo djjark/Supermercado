@@ -8,7 +8,7 @@ const App = () => {
 
   return (
     <div className='text-center'>
-      <h1>Supermercado</h1>
+      <h1 className='text-white'>Supermercado</h1>
       <Link to="/add-item">
         <button>Add Item</button>
       </Link>
