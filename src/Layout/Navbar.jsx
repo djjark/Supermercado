@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingCartIcon } from '@heroicons/react/24/outline';
+import supabase from '../supabaseClient'; // Import the Supabase client
 
 
 const Navbar = (user) => {
     const userinfo = user?.session?.user_metadata
-    console.log(userinfo)
 
-
-    const [isOpen, setIsOpen] = useState(false);
-
-    const handleLogout = () => {
-        setIsOpen(false);
-        onLogout();
+    const handleLogout = async () => {
+        try {
+            await supabase.auth.signOut();
+            console.log('User logged out successfully');
+            // Optionally, redirect the user to the login page or another route
+        } catch (error) {
+            console.error('Error logging out:', error.message);
+        }
     };
     return (
         <nav className="bg-blue-200 min-w-full">
