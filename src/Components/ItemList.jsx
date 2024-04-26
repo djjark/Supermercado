@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import supabase from './supabaseClient'; // Import the Supabase client
-import { Auth } from '@supabase/auth-ui-react'
-import { ThemeSupa } from '@supabase/auth-ui-shared'
+import supabase from '../supabaseClient'; // Import the Supabase client
+import Searchbar from './Searchbar';
+
 
 function ProductList() {
     const [products, setProducts] = useState([]);
     const [newProductName, setNewProductName] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
     const [session, setSession] = useState(null)
+    const [searchTerm, setSearchTerm] = useState('');
+    const [selectedFilter, setSelectedFilter] = useState('');
 
     useEffect(() => {
         fetchProducts();
@@ -95,9 +97,10 @@ function ProductList() {
     };
 
 
-    const handleSearch = async () => {
+    const handleSearch = async (value) => {
+        setSearchTerm(value);
         try {
-            const { data, error } = await supabase.from('supermercado').select('*').ilike('Nome', `%${searchQuery}%`);
+            const { data, error } = await supabase.from('supermercado').select('*').ilike('Nome', `%${value}%`);
             if (error) {
                 throw error;
             }
@@ -111,20 +114,22 @@ function ProductList() {
         setSearchQuery('');
         fetchProducts();
     };
+
+    const handleFilter = (value) => {
+        setSelectedFilter(value);
+    };
+
+
     return (
 
         <div className="container">
-            {!session ? <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} /> : null}
-            <div className="search">
-                <input
-                    type="text"
-                    placeholder="Search by product name"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    onKeyUp={handleSearch}
-                />
-                <button onClick={clearSearch}>Clear</button>
-            </div>
+            <Searchbar
+                placeholder="Search..."
+                options={['Option 1', 'Option 2', 'Option 3']}
+                onSearch={handleSearch}
+                onFilter={handleFilter}
+            />
+
             <table className="table">
                 <thead>
                     <tr>
